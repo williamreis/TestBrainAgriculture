@@ -48,6 +48,11 @@ A proposta é criar uma aplicação para gerenciar o cadastro de produtores rura
 
 ### Usando Makefile
 
+Instale o Make
+```bash
+sudo apt install make
+```
+
 ```bash
 # Configurar o projeto (primeira vez)
 make setup
