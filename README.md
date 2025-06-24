@@ -57,14 +57,14 @@ sudo apt install make
 # Configurar o projeto (primeira vez)
 make setup
 
+# Popular banco com dados mockados
+make seed
+
 # Subir todos os serviços (API + Dashboard + DB)
 make run
 
 # Parar todos os serviços (API + Dashboard + DB)
 make stop
-
-# Popular banco com dados mockados
-make seed
 
 # Rodar testes
 make test
