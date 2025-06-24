@@ -62,13 +62,6 @@ dashboard: ## Rodar apenas o dashboard Streamlit
 api-only: ## Rodar apenas a API (sem dashboard)
 	docker compose up db api
 
-# Comandos locais com uv (para desenvolvimento)
-install: ## Instalar dependências localmente com uv
-	uv sync
-
-install-dev: ## Instalar dependências de desenvolvimento
-	uv sync --extra dev
-
 run-api: ## Rodar API localmente
 	uv run uvicorn app.main:app --host 0.0.0.0 --port 8008 --reload
 
