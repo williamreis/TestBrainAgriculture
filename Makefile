@@ -7,8 +7,6 @@ help: ## Mostra esta ajuda
 setup: ## Configurar o projeto (instalar dependências, inicializar Alembic)
 	@echo "Configurando o projeto..."
 	docker compose up -d --build
-	sleep 5
-	docker compose exec api uv run alembic init alembic || true
 	@echo "Projeto configurado!"
 
 up: ## Subir os containers
