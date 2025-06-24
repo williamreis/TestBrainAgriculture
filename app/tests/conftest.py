@@ -13,6 +13,7 @@ from app.routes.cultura import get_db as get_db_cultura
 from app.routes.propriedade_safra_cultura import get_db as get_db_assoc
 from app.routes.dashboard import get_db as get_db_dashboard
 
+
 # Configuração do banco de teste em memória para isolamento
 @pytest.fixture(scope="function")
 def db_session():
@@ -30,11 +31,13 @@ def db_session():
 @pytest.fixture
 def client(db_session):
     """Cria um cliente de teste com banco isolado e conexão fixa."""
+
     def override_get_db():
         try:
             yield db_session
         finally:
             pass
+
     app.dependency_overrides[get_db_produtor] = override_get_db
     app.dependency_overrides[get_db_propriedade] = override_get_db
     app.dependency_overrides[get_db_safra] = override_get_db
