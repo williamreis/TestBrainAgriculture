@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
@@ -18,6 +18,4 @@ class ProdutorUpdate(BaseModel):
 
 class ProdutorRead(ProdutorBase):
     id: int
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

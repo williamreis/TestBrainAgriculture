@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator, ConfigDict
 from typing import Optional
 
 
@@ -9,7 +9,8 @@ class SafraBase(BaseModel):
     Validações para Safra
     """
 
-    @validator('ano')
+    @field_validator('ano')
+    @classmethod
     def ano_valido(cls, v):
         if v < 1900 or v > 2100:
             raise ValueError('Ano deve estar entre 1900 e 2100')
@@ -26,6 +27,4 @@ class SafraUpdate(BaseModel):
 
 class SafraRead(SafraBase):
     id: int
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

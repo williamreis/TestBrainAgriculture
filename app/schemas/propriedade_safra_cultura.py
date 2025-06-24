@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 
@@ -23,9 +23,7 @@ class PropriedadeSafraCulturaRead(PropriedadeSafraCulturaBase):
     propriedade_nome: Optional[str] = None
     safra_ano: Optional[int] = None
     cultura_nome: Optional[str] = None
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PropriedadeSafraCulturaDetail(BaseModel):
@@ -36,6 +34,4 @@ class PropriedadeSafraCulturaDetail(BaseModel):
     safra_ano: int
     cultura_id: int
     cultura_nome: str
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
