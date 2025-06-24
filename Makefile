@@ -12,7 +12,7 @@ setup: ## Configurar o projeto (instalar dependências, inicializar Alembic)
 	@echo "Projeto configurado!"
 
 up: ## Subir os containers
-	docker compose up -d --build
+	docker compose up -d
 
 down: ## Parar os containers
 	docker compose down
