@@ -1,0 +1,30 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+__pypackages__/
+
+# Virtual environments
+.venv/
+venv/
+.uv/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Testing
+.pytest_cache/
+
+# Alembic
+alembic/versions/*.py
+!alembic/versions/__init__.py
+
+# Docker
+.dockerignore
