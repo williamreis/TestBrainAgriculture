@@ -1,4 +1,4 @@
-.PHONY: help setup up down migrate test test-coverage test-unit test-integration logs clean seed seed-force
+.PHONY: help setup run stop migrate test test-coverage test-unit test-integration logs clean seed seed-force
 
 help: ## Mostra esta ajuda
 	@echo "Comandos disponíveis:"
@@ -7,12 +7,13 @@ help: ## Mostra esta ajuda
 setup: ## Configurar o projeto (instalar dependências, inicializar Alembic)
 	@echo "Configurando o projeto..."
 	docker compose up -d --build
+	docker compose exec api uv run alembic upgrade head
 	@echo "Projeto configurado!"
 
-up: ## Subir os containers
+run: ## Subir os containers
 	docker compose up -d
 
-down: ## Parar os containers
+stop: ## Parar os containers
 	docker compose down
 
 migrate: ## Executar migrações
@@ -59,15 +60,3 @@ dashboard: ## Rodar apenas o dashboard Streamlit
 
 api-only: ## Rodar apenas a API (sem dashboard)
 	docker compose up db api
-
-run-api: ## Rodar API localmente
-	uv run uvicorn app.main:app --host 0.0.0.0 --port 8008 --reload
-
-run-dashboard: ## Rodar dashboard localmente
-	uv run streamlit run app/dashboard.py --server.port 8501 --server.address 0.0.0.0
-
-test-local: ## Rodar testes localmente
-	uv run pytest -v
-
-seed-local: ## Popular banco localmente
-	uv run python -m app.utils.seed_data
