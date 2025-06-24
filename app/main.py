@@ -9,7 +9,10 @@ from app.utils.logger import log_api_request, log_error
 """
 app = FastAPI(title="TestBrainAgriculture API")
 
-# Configurar CORS
+"""
+Configurar CORS
+- Permitir todas as origens, métodos e cabeçalhos
+"""
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
