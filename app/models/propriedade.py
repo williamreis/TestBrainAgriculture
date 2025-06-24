@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
+
 class Propriedade(Base):
     __tablename__ = "propriedades"
     id = Column(Integer, primary_key=True, index=True)
@@ -13,4 +14,4 @@ class Propriedade(Base):
     area_vegetacao = Column(Float, nullable=False)
     produtor_id = Column(Integer, ForeignKey("produtores.id"), nullable=False)
     produtor = relationship("ProdutorRural", back_populates="propriedades")
-    culturas = relationship("PropriedadeSafraCultura", back_populates="propriedade") 
+    culturas = relationship("PropriedadeSafraCultura", back_populates="propriedade")
