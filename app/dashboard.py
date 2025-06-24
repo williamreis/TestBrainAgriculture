@@ -9,7 +9,8 @@ import os
 
 # Configuração da página
 st.set_page_config(
-    page_title="TestBrainAgriculture - Dashboard",
+    page_title="TestBrainAgriculture Dashboard",
+    page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -17,12 +18,8 @@ st.set_page_config(
 # Configurações - usar variável de ambiente ou fallback
 API_BASE = os.getenv("API_BASE_URL", "http://api:8000")
 
-"""
-Carrega dados do dashboard da API
-"""
-
-
 def load_dashboard_data():
+    """Carrega dados do dashboard da API"""
     try:
         response = requests.get(f"{API_BASE}/dashboard/")
         response.raise_for_status()
@@ -31,9 +28,6 @@ def load_dashboard_data():
         st.error(f"Erro ao carregar dados da API: {e}")
         return None
 
-"""
-Função principal do Streamlit
-"""
 def main():
     # Header
     st.title("Dashboard")
@@ -43,7 +37,7 @@ def main():
     st.sidebar.title("Navegação")
     page = st.sidebar.selectbox(
         "Selecione a página:",
-        ["Dashboard Geral", "Estatísticas Detalhadas", "API Status"]
+        ["Dashboard Geral", "Estatísticas Detalhadas"]
     )
 
     if page == "Dashboard Geral":
@@ -52,12 +46,9 @@ def main():
         show_detailed_stats()
 
 
-"""
-Exibe o dashboard principal
-"""
-
-
 def show_main_dashboard():
+    """Exibe o dashboard principal"""
+
     # Carregar dados
     with st.spinner("Carregando dados..."):
         data = load_dashboard_data()
@@ -159,13 +150,8 @@ def show_main_dashboard():
             )
             st.plotly_chart(fig_area, use_container_width=True)
 
-
-"""
-Exibe estatísticas detalhadas
-"""
-
-
 def show_detailed_stats():
+    """Exibe estatísticas detalhadas"""
     st.header("Estatísticas Detalhadas")
 
     data = load_dashboard_data()
@@ -219,3 +205,7 @@ def show_detailed_stats():
 
         fig_comparison.update_layout(height=400, showlegend=False)
         st.plotly_chart(fig_comparison, use_container_width=True)
+
+
+if __name__ == "__main__":
+    main()
