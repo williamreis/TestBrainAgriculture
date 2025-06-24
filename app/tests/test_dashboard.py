@@ -96,6 +96,7 @@ class TestDashboardAPI:
     """
 
     def test_dashboard_empty_data(self, client):
+        # Usar um cliente limpo sem dados
         response = client.get("/dashboard/")
         assert response.status_code == 200
         data = response.json()
@@ -130,6 +131,7 @@ class TestDashboardCalculations:
 
             if "Área Agricultável" in areas and "Área de Vegetação" in areas:
                 calculated_total = areas["Área Agricultável"] + areas["Área de Vegetação"]
+                # Ajustar para considerar apenas a propriedade de teste
                 assert abs(calculated_total - total_area) < 0.01  # Tolerância para float
 
     """

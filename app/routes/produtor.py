@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from app.models import ProdutorRural
 from app.models.database import SessionLocal
 from app.schemas.produtor import ProdutorCreate, ProdutorRead, ProdutorUpdate
@@ -29,11 +30,18 @@ Criação de um novo produtor rural
 def create_produtor(produtor: ProdutorCreate, db: Session = Depends(get_db)):
     if not validar_cpf_cnpj(produtor.cpf_cnpj):
         raise HTTPException(status_code=400, detail="CPF ou CNPJ inválido")
-    db_produtor = ProdutorRural(**produtor.dict())
-    db.add(db_produtor)
-    db.commit()
-    db.refresh(db_produtor)
-    return db_produtor
+    
+    try:
+        db_produtor = ProdutorRural(**produtor.model_dump())
+        db.add(db_produtor)
+        db.commit()
+        db.refresh(db_produtor)
+        return db_produtor
+    except IntegrityError as e:
+        db.rollback()
+        if "UNIQUE constraint failed" in str(e) and "cpf_cnpj" in str(e):
+            raise HTTPException(status_code=400, detail="CPF ou CNPJ já cadastrado")
+        raise HTTPException(status_code=400, detail="Erro ao criar produtor")
 
 
 """
@@ -69,13 +77,21 @@ def update_produtor(produtor_id: int, produtor: ProdutorUpdate, db: Session = De
     db_produtor = db.query(ProdutorRural).filter(ProdutorRural.id == produtor_id).first()
     if not db_produtor:
         raise HTTPException(status_code=404, detail="Produtor não encontrado")
+    
     if produtor.cpf_cnpj and not validar_cpf_cnpj(produtor.cpf_cnpj):
         raise HTTPException(status_code=400, detail="CPF ou CNPJ inválido")
-    for key, value in produtor.dict(exclude_unset=True).items():
-        setattr(db_produtor, key, value)
-    db.commit()
-    db.refresh(db_produtor)
-    return db_produtor
+    
+    try:
+        for key, value in produtor.model_dump(exclude_unset=True).items():
+            setattr(db_produtor, key, value)
+        db.commit()
+        db.refresh(db_produtor)
+        return db_produtor
+    except IntegrityError as e:
+        db.rollback()
+        if "UNIQUE constraint failed" in str(e) and "cpf_cnpj" in str(e):
+            raise HTTPException(status_code=400, detail="CPF ou CNPJ já cadastrado")
+        raise HTTPException(status_code=400, detail="Erro ao atualizar produtor")
 
 
 """

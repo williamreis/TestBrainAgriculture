@@ -5,56 +5,52 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.models.database import Base
 from app.models import ProdutorRural, Propriedade, Safra, Cultura, PropriedadeSafraCultura
+# Importar todos os get_db das rotas
+from app.routes.produtor import get_db as get_db_produtor
+from app.routes.propriedade import get_db as get_db_propriedade
+from app.routes.safra import get_db as get_db_safra
+from app.routes.cultura import get_db as get_db_cultura
+from app.routes.propriedade_safra_cultura import get_db as get_db_assoc
+from app.routes.dashboard import get_db as get_db_dashboard
 
-# Configuração do banco de teste
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-@pytest.fixture(scope="session")
-def db_engine():
-    """Cria o engine do banco de teste"""
-    Base.metadata.create_all(bind=engine)
-    yield engine
-    Base.metadata.drop_all(bind=engine)
-
-
-@pytest.fixture
-def db_session(db_engine):
-    """Cria uma sessão de teste"""
-    connection = db_engine.connect()
-    transaction = connection.begin()
-    session = TestingSessionLocal(bind=connection)
-
+# Configuração do banco de teste em memória para isolamento
+@pytest.fixture(scope="function")
+def db_session():
+    """Cria uma sessão de teste isolada, usando a mesma conexão para todo o teste."""
+    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    connection = engine.connect()
+    Base.metadata.create_all(bind=connection)
+    TransactionSession = sessionmaker(autocommit=False, autoflush=False, bind=connection)
+    session = TransactionSession()
     yield session
-
     session.close()
-    transaction.rollback()
     connection.close()
 
 
 @pytest.fixture
 def client(db_session):
-    """Cria um cliente de teste"""
-
+    """Cria um cliente de teste com banco isolado e conexão fixa."""
     def override_get_db():
         try:
             yield db_session
         finally:
             pass
-
-    app.dependency_overrides = {}
+    app.dependency_overrides[get_db_produtor] = override_get_db
+    app.dependency_overrides[get_db_propriedade] = override_get_db
+    app.dependency_overrides[get_db_safra] = override_get_db
+    app.dependency_overrides[get_db_cultura] = override_get_db
+    app.dependency_overrides[get_db_assoc] = override_get_db
+    app.dependency_overrides[get_db_dashboard] = override_get_db
     return TestClient(app)
 
 
 # Dados mockados para testes
 @pytest.fixture
 def mock_produtor_data():
-    """Dados mockados para produtor"""
+    """Dados mockados para produtor com CPF válido"""
     return {
         "nome": "João Silva",
-        "cpf_cnpj": "12345678901"
+        "cpf_cnpj": "529.982.247-25"  # CPF válido
     }
 
 

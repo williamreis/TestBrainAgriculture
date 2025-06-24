@@ -36,12 +36,15 @@ class TestProdutoresAPI:
     """
 
     def test_create_produtor_duplicate_cpf(self, client, sample_produtor):
+        # Primeiro criar um produtor
         duplicate_data = {
             "nome": "Outro Nome",
             "cpf_cnpj": sample_produtor.cpf_cnpj
         }
         response = client.post("/produtores/", json=duplicate_data)
+        # Deve retornar erro 400 quando CPF/CNPJ duplicado
         assert response.status_code == 400
+        assert "CPF ou CNPJ já cadastrado" in response.json()["detail"]
 
     """
     Testa listagem de produtores
