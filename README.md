@@ -8,6 +8,7 @@
 Este projeto foi desenvolvido como parte de um teste técnico para a empresa **Brain Agriculture**, referente à vaga de **Desenvolvedor Backend**. \
 A proposta é criar uma aplicação para gerenciar o cadastro de produtores rurais, com os seguintes dados:
 
+![Dashboard](docs/images/dashboard.png)
 
 ## Diagrama da Arquitetura
 
